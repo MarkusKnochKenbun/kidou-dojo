@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HomeData {
 
- String get message; String get endpoint; ServiceState get serviceState;
+ String get message; String get endpoint; ServiceState get serviceState; Map<String, dynamic>? get matcherConfig;
 /// Create a copy of HomeData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $HomeDataCopyWith<HomeData> get copyWith => _$HomeDataCopyWithImpl<HomeData>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeData&&(identical(other.message, message) || other.message == message)&&(identical(other.endpoint, endpoint) || other.endpoint == endpoint)&&(identical(other.serviceState, serviceState) || other.serviceState == serviceState));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeData&&(identical(other.message, message) || other.message == message)&&(identical(other.endpoint, endpoint) || other.endpoint == endpoint)&&(identical(other.serviceState, serviceState) || other.serviceState == serviceState)&&const DeepCollectionEquality().equals(other.matcherConfig, matcherConfig));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message,endpoint,serviceState);
+int get hashCode => Object.hash(runtimeType,message,endpoint,serviceState,const DeepCollectionEquality().hash(matcherConfig));
 
 @override
 String toString() {
-  return 'HomeData(message: $message, endpoint: $endpoint, serviceState: $serviceState)';
+  return 'HomeData(message: $message, endpoint: $endpoint, serviceState: $serviceState, matcherConfig: $matcherConfig)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $HomeDataCopyWith<$Res>  {
   factory $HomeDataCopyWith(HomeData value, $Res Function(HomeData) _then) = _$HomeDataCopyWithImpl;
 @useResult
 $Res call({
- String message, String endpoint, ServiceState serviceState
+ String message, String endpoint, ServiceState serviceState, Map<String, dynamic>? matcherConfig
 });
 
 
@@ -62,12 +62,13 @@ class _$HomeDataCopyWithImpl<$Res>
 
 /// Create a copy of HomeData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? message = null,Object? endpoint = null,Object? serviceState = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? message = null,Object? endpoint = null,Object? serviceState = null,Object? matcherConfig = freezed,}) {
   return _then(_self.copyWith(
 message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,endpoint: null == endpoint ? _self.endpoint : endpoint // ignore: cast_nullable_to_non_nullable
 as String,serviceState: null == serviceState ? _self.serviceState : serviceState // ignore: cast_nullable_to_non_nullable
-as ServiceState,
+as ServiceState,matcherConfig: freezed == matcherConfig ? _self.matcherConfig : matcherConfig // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,
   ));
 }
 
@@ -152,10 +153,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String message,  String endpoint,  ServiceState serviceState)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String message,  String endpoint,  ServiceState serviceState,  Map<String, dynamic>? matcherConfig)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HomeData() when $default != null:
-return $default(_that.message,_that.endpoint,_that.serviceState);case _:
+return $default(_that.message,_that.endpoint,_that.serviceState,_that.matcherConfig);case _:
   return orElse();
 
 }
@@ -173,10 +174,10 @@ return $default(_that.message,_that.endpoint,_that.serviceState);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String message,  String endpoint,  ServiceState serviceState)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String message,  String endpoint,  ServiceState serviceState,  Map<String, dynamic>? matcherConfig)  $default,) {final _that = this;
 switch (_that) {
 case _HomeData():
-return $default(_that.message,_that.endpoint,_that.serviceState);case _:
+return $default(_that.message,_that.endpoint,_that.serviceState,_that.matcherConfig);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -193,10 +194,10 @@ return $default(_that.message,_that.endpoint,_that.serviceState);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String message,  String endpoint,  ServiceState serviceState)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String message,  String endpoint,  ServiceState serviceState,  Map<String, dynamic>? matcherConfig)?  $default,) {final _that = this;
 switch (_that) {
 case _HomeData() when $default != null:
-return $default(_that.message,_that.endpoint,_that.serviceState);case _:
+return $default(_that.message,_that.endpoint,_that.serviceState,_that.matcherConfig);case _:
   return null;
 
 }
@@ -208,12 +209,21 @@ return $default(_that.message,_that.endpoint,_that.serviceState);case _:
 
 
 class _HomeData implements HomeData {
-  const _HomeData({required this.message, required this.endpoint, required this.serviceState});
+  const _HomeData({required this.message, required this.endpoint, required this.serviceState, final  Map<String, dynamic>? matcherConfig}): _matcherConfig = matcherConfig;
   
 
 @override final  String message;
 @override final  String endpoint;
 @override final  ServiceState serviceState;
+ final  Map<String, dynamic>? _matcherConfig;
+@override Map<String, dynamic>? get matcherConfig {
+  final value = _matcherConfig;
+  if (value == null) return null;
+  if (_matcherConfig is EqualUnmodifiableMapView) return _matcherConfig;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
+}
+
 
 /// Create a copy of HomeData
 /// with the given fields replaced by the non-null parameter values.
@@ -225,16 +235,16 @@ _$HomeDataCopyWith<_HomeData> get copyWith => __$HomeDataCopyWithImpl<_HomeData>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeData&&(identical(other.message, message) || other.message == message)&&(identical(other.endpoint, endpoint) || other.endpoint == endpoint)&&(identical(other.serviceState, serviceState) || other.serviceState == serviceState));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeData&&(identical(other.message, message) || other.message == message)&&(identical(other.endpoint, endpoint) || other.endpoint == endpoint)&&(identical(other.serviceState, serviceState) || other.serviceState == serviceState)&&const DeepCollectionEquality().equals(other._matcherConfig, _matcherConfig));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message,endpoint,serviceState);
+int get hashCode => Object.hash(runtimeType,message,endpoint,serviceState,const DeepCollectionEquality().hash(_matcherConfig));
 
 @override
 String toString() {
-  return 'HomeData(message: $message, endpoint: $endpoint, serviceState: $serviceState)';
+  return 'HomeData(message: $message, endpoint: $endpoint, serviceState: $serviceState, matcherConfig: $matcherConfig)';
 }
 
 
@@ -245,7 +255,7 @@ abstract mixin class _$HomeDataCopyWith<$Res> implements $HomeDataCopyWith<$Res>
   factory _$HomeDataCopyWith(_HomeData value, $Res Function(_HomeData) _then) = __$HomeDataCopyWithImpl;
 @override @useResult
 $Res call({
- String message, String endpoint, ServiceState serviceState
+ String message, String endpoint, ServiceState serviceState, Map<String, dynamic>? matcherConfig
 });
 
 
@@ -262,12 +272,13 @@ class __$HomeDataCopyWithImpl<$Res>
 
 /// Create a copy of HomeData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? message = null,Object? endpoint = null,Object? serviceState = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,Object? endpoint = null,Object? serviceState = null,Object? matcherConfig = freezed,}) {
   return _then(_HomeData(
 message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,endpoint: null == endpoint ? _self.endpoint : endpoint // ignore: cast_nullable_to_non_nullable
 as String,serviceState: null == serviceState ? _self.serviceState : serviceState // ignore: cast_nullable_to_non_nullable
-as ServiceState,
+as ServiceState,matcherConfig: freezed == matcherConfig ? _self._matcherConfig : matcherConfig // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,
   ));
 }
 

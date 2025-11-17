@@ -12,6 +12,10 @@ enum ServiceState {
 
 @freezed
 abstract class HomeData with _$HomeData {
-  const factory HomeData({required String message, required String endpoint, required ServiceState serviceState}) =
-      _HomeData;
+  const factory HomeData({
+    required String message,
+    required String endpoint,
+    required ServiceState serviceState,
+    Map<String, dynamic>? matcherConfig,
+  }) = _HomeData;
 }

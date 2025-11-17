@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kidou_fl/additional_widgets/file_select_widget.dart';
 import 'package:kidou_fl/additional_widgets/text_input_widget.dart';
 import 'package:kidou_fl/main.dart';
 import 'package:kidou_fl/presentation/home_notifier.dart';
@@ -58,6 +59,14 @@ class HomeScreen extends ConsumerWidget {
                         initialValue: genericMatcherEndpoint,
                       ),
                     ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      child: FileSelectWidget(
+                        selectFile: () => ref.read(homeProvider.notifier).selectMatcherConfig(),
+                        selectText: "matcher config",
+                      ),
+                    ),
+
                     ElevatedButton(
                       onPressed: () {
                         if (widgetState.serviceState.isRunning()) {

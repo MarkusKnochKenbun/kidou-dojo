@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kidou_fl/constants.dart';
 import 'package:kidou_fl/main.dart';
@@ -9,6 +11,7 @@ import 'package:kidou_fl/presentation/home_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:toastification/toastification.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 part 'home_notifier.g.dart';
@@ -37,6 +40,47 @@ class HomeNotifier extends _$HomeNotifier {
     update((data) => data.copyWith(endpoint: value));
   }
 
+  Future<String> selectMatcherConfig() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+      withData: true,
+    );
+
+    if (result != null) {
+      // Read the file bytes
+      final fileBytes = result.files.first.bytes;
+
+      if (fileBytes != null) {
+        // Convert bytes to string
+        final fileContent = utf8.decode(fileBytes);
+
+        // Decode the JSON string
+        final matcherConfig = json.decode(fileContent) as Map<String, dynamic>;
+
+        talker.info("matcherConfig: $matcherConfig");
+
+        // Update state with the parsed JSON
+        update((data) => data.copyWith(matcherConfig: matcherConfig));
+
+        return result.files.first.name;
+      } else {
+        toastification.show(
+          type: ToastificationType.error,
+          style: ToastificationStyle.flat,
+          title: Text("Error"),
+          description: Text("Non valid matcher config!"),
+          autoCloseDuration: const Duration(seconds: 5),
+        );
+
+        talker.warning("File bytes are null");
+      }
+    }
+
+    return "";
+  }
+
   void start(HomeData widgetState) async {
     if (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS || kIsWeb) {
       final status = await Permission.microphone.request();
@@ -57,16 +101,34 @@ class HomeNotifier extends _$HomeNotifier {
 
     // websocket
     final initialMessageJsonString = await rootBundle.loadString(initialMessageFilePath);
-    final jsonData = json.decode(initialMessageJsonString);
+    final initialMessage = json.decode(initialMessageJsonString) as Map<String, dynamic>;
 
-    final matcherConfigJsonString = await rootBundle.loadString(matcherConfigFilePath);
-    final matcherConfig = json.decode(matcherConfigJsonString);
+    // Use the matcher config from state if available, otherwise load from assets
+    final matcherConfig = widgetState.matcherConfig;
 
-    jsonData["initial_commands"] = [matcherConfig];
+    if (matcherConfig == null) {
+      await update((data) => data.copyWith(serviceState: ServiceState.idle));
 
-    talker.info("$jsonData");
+      toastification.show(
+        type: ToastificationType.error,
+        style: ToastificationStyle.flat,
+        title: Text("Error"),
+        description: Text("Non valid matcher config!"),
+        autoCloseDuration: const Duration(seconds: 5),
+      );
+      return;
+    }
 
-    final initialMessages = [json.encode(jsonData)];
+    // Set initial_commands inside the "value" object
+    if (initialMessage["value"] is Map<String, dynamic>) {
+      (initialMessage["value"] as Map<String, dynamic>)["initial_commands"] = [
+        {"matcher_config": matcherConfig},
+      ];
+    }
+
+    talker.info("$initialMessage");
+
+    final initialMessages = [json.encode(initialMessage)];
 
     final channel = WebSocketChannel.connect(Uri.parse(widgetState.endpoint));
     await channel.ready;
