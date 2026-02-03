@@ -10,11 +10,11 @@ part of 'home_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(HomeNotifier)
-const homeProvider = HomeNotifierProvider._();
+final homeProvider = HomeNotifierProvider._();
 
 final class HomeNotifierProvider
     extends $AsyncNotifierProvider<HomeNotifier, HomeData> {
-  const HomeNotifierProvider._()
+  HomeNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -40,7 +40,6 @@ abstract class _$HomeNotifier extends $AsyncNotifier<HomeData> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<HomeData>, HomeData>;
     final element =
         ref.element
@@ -50,6 +49,6 @@ abstract class _$HomeNotifier extends $AsyncNotifier<HomeData> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
