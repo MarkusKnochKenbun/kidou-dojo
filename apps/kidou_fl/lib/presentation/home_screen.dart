@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kidou_fl/additional_widgets/error_screen.dart';
 import 'package:kidou_fl/additional_widgets/file_select_widget.dart';
 import 'package:kidou_fl/additional_widgets/text_input_widget.dart';
 import 'package:kidou_fl/main.dart';
@@ -12,57 +13,66 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final size = MediaQuery.of(context).size;
     final asyncWidgetState = ref.watch(homeProvider);
 
     return asyncWidgetState.when(
       loading: () => const SizedBox(child: Text("Loading")),
-      error: (error, stack) => SizedBox(child: Text("Test")),
+      error: (error, stack) =>
+          KenbunErrorScreen(errorMessage: error.toString()),
       data: (widgetState) {
         return Scaffold(
           body: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const .all(8.0),
               child: Center(
                 child: Column(
                   spacing: 10,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: .center,
+                  crossAxisAlignment: .center,
                   children: [
                     Text(
                       'KIDOU',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimaryContainer),
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        color: theme.colorScheme.onPrimaryContainer,
+                      ),
                     ),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height * 0.6,
+                      width: size.width * 0.8,
+                      height: size.height * 0.6,
                       child: Card(
                         shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Theme.of(context).colorScheme.outline),
+                          side: BorderSide(color: theme.colorScheme.outline),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         elevation: 0,
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: SingleChildScrollView(child: _buildFormattedMessage(widgetState.message)),
+                          child: SingleChildScrollView(
+                            child: _buildFormattedMessage(widgetState.message),
+                          ),
                         ),
                       ),
                     ),
 
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.4,
+                      width: size.width * 0.4,
                       child: TextInputWidget(
                         onValidChanged: (value) {
-                          ref.read(homeProvider.notifier).onEndpointValueChange(value);
+                          ref
+                              .read(homeProvider.notifier)
+                              .onEndpointValueChange(value);
                         },
                         initialValue: genericMatcherEndpoint,
                       ),
                     ),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.4,
+                      width: size.width * 0.4,
                       child: FileSelectWidget(
-                        selectFile: () => ref.read(homeProvider.notifier).selectMatcherConfig(),
+                        selectFile: () => ref
+                            .read(homeProvider.notifier)
+                            .selectMatcherConfig(),
                         selectText: "matcher config",
                       ),
                     ),
@@ -75,7 +85,9 @@ class HomeScreen extends ConsumerWidget {
                           ref.read(homeProvider.notifier).start(widgetState);
                         }
                       },
-                      child: widgetState.serviceState.isRunning() ? const Text("Stop") : const Text("Start"),
+                      child: widgetState.serviceState.isRunning()
+                          ? const Text("Stop")
+                          : const Text("Start"),
                     ),
                   ],
                 ),
@@ -98,7 +110,10 @@ class HomeScreen extends ConsumerWidget {
       // Pretty print with 2-space indentation
       final prettyJson = const JsonEncoder.withIndent('  ').convert(jsonObject);
 
-      return SelectableText(prettyJson, style: const TextStyle(fontFamily: 'monospace', fontSize: 14));
+      return SelectableText(
+        prettyJson,
+        style: const TextStyle(fontFamily: 'monospace', fontSize: 14),
+      );
     } catch (e) {
       // If not valid JSON, display as plain text
       return SelectableText(message, style: const TextStyle(fontSize: 14));
